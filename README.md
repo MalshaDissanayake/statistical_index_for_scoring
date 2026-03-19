@@ -1,0 +1,1 @@
+# statistical_index_for_scoring
