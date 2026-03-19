@@ -5,45 +5,9 @@ from scipy.stats import wilcoxon
 # =========================================================
 # 1. LOAD THE EXCEL FILE
 # =========================================================
-file_path = r"CAI Test.xlsx"
+file_path = r"culture_score_dummy_2.xlsx"
+df = pd.read_excel(file_path)
 
-# Read without headers because the headers span multiple rows
-raw = pd.read_excel(file_path, header=None)
-
-# ---------------------------------------------------------
-# Expected structure:
-# Row 0 = main category
-# Row 1 = Now / Pref
-# Row 2 = Collaborate / Create / Compete / Control
-# Row 3 onward = participant data
-# ---------------------------------------------------------
-
-header_row_1 = raw.iloc[0].copy()
-header_row_2 = raw.iloc[1].copy()
-header_row_3 = raw.iloc[2].copy()
-
-# Forward-fill merged header cells
-header_row_1 = header_row_1.ffill()
-header_row_2 = header_row_2.ffill()
-
-# Build clean column names
-new_columns = []
-for i in range(raw.shape[1]):
-    h1 = header_row_1[i]
-    h2 = header_row_2[i]
-    h3 = header_row_3[i]
-
-    if i == 0:
-        new_columns.append("Participant_No")
-    else:
-        if pd.isna(h1) and pd.isna(h2) and pd.isna(h3):
-            new_columns.append(f"EMPTY_{i}")
-        else:
-            new_columns.append(f"{h1}_{h2}_{h3}")
-
-# Assign cleaned column names
-df = raw.iloc[3:].copy()
-df.columns = new_columns
 
 # Drop empty columns and rows
 df = df.loc[:, ~df.columns.str.startswith("EMPTY_")]
@@ -391,9 +355,7 @@ results_df = results_df[
 # =========================================================
 # 10. SAVE OUTPUTS
 # =========================================================
-df.to_excel("culture_scored_output_axes.xlsx", index=False)
-results_df.to_excel("culture_axis_wilcoxon_results.xlsx", index=False)
+results_df.to_excel("dummy_2_results.xlsx", index=False)
 
 print("\nFiles saved:")
-print("1. culture_scored_output_axes.xlsx")
-print("2. culture_axis_wilcoxon_results.xlsx")
+print("dummy_2_results.xlsx")
